@@ -6,7 +6,8 @@
 KERNEL="linux-6.1.9"
 IMAGE="bzImage"
 IMAGE_PATH="${KERNEL}/arch/x86/boot/"
-PAYLOAD=""
+ROOTFS="rootfs"
+#PAYLOAD=""
 
 
 
@@ -18,15 +19,17 @@ help () {
 	echo "h		Prints this help"
 	echo "k		Specifies a kernel (default: ${KERNEL})"
 	echo "i		Specifies an image (default: ${IMAGE})"
-	echo "p		Specifies a payload (default: ${PAYLOAD})"
+	echo "r		Specifies a root filesystem (default: ${ROOTFS})"
+	#echo "p		Specifies a payload (default: ${PAYLOAD})"
 }
 
-while getopts "hk:i:p:" arg; do
+while getopts "hk:i:r:" arg; do
 	case $arg in
 		h) help && exit		;;
 		k) KERNEL=$OPTARG	;;
 		i) IMAGE=$OPTARG	;;
-		p) PAYLOAD=$OPTARG	;;
+		r) ROOTFS=$OPTARG	;;
+		#p) PAYLOAD=$OPTARG	;;
 	esac
 done
 
@@ -67,32 +70,43 @@ fi
 if [ ! -f "initramfs" ]
 then
 	
-	if [ ! -d "rootfs" ]
-		then mkdir "rootfs"
-		cd "rootfs"
-		mkdir bin dev etc proc var tmp usr mnt sys
-		cd ../
+#	if [ ! -d "rootfs" ]
+#		then mkdir "rootfs"
+#		cd "rootfs"
+#		mkdir bin dev etc proc var tmp usr mnt sys
+#		cd ../
+#	fi
+#	if [ -z ${PAYLOAD} ]
+#	then
+#		echo "building rootfs without any payload provided."
+#	else
+#		if [ ! -f ${PAYLOAD}]
+#		then
+#			echo "Please provide a valid payload."
+#			exit 1
+#		else
+#			cp ${PAYLOAD} "rootfs/init"
+#				chmod +x "rootfs/init"
+#		fi
+#	fi
+#
+#	cd rootfs
+#	find . | cpio -o -H newc | gzip > ../initramfs
+#	cd ../
+	
+	
+	
+	if [ ! -d ${ROOTFS} ]
+		echo "please provide a valid root filesystem"
+		exit 1
 	fi
-	if [ -z ${PAYLOAD} ]
-	then
-		echo "building rootfs without any payload provided."
-	else
-		if [ ! -f ${PAYLOAD}]
-		then
-			echo "Please provide a valid payload."
-			exit 1
-		else
-			cp ${PAYLOAD} "rootfs/init"
-				chmod +x "rootfs/init"
-		fi
-	fi
-
-	cd rootfs
+	
+	cd ${ROOTFS}
 	find . | cpio -o -H newc | gzip > ../initramfs
 	cd ../
-
-	echo "done."
 	
 else
 	echo "initramfs already build, skipping..."
 fi
+
+echo "done."	
