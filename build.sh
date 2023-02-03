@@ -6,7 +6,7 @@
 KERNEL="linux-6.1.9"
 IMAGE="bzImage"
 IMAGE_PATH="${KERNEL}/arch/x86/boot/"
-PAYLOAD="main.elf"
+PAYLOAD=""
 
 
 
@@ -34,32 +34,32 @@ done
 
 if [ ! -f ${IMAGE} ]
 then
-    if [ ! -f ${IMAGE_PATH} ]
-    then
+	if [ ! -f ${IMAGE_PATH} ]
+	then
 
-        if [ ! -d ${KERNEL} ]
-        then
-            if [ ! -f ${KERNEL}.tar.xz ]
-            then
-                echo "${KERNEL}.tar.xz not found, downloading..."
-                wget "https://cdn.kernel.org/pub/linux/kernel/v${KERNEL:6:1}.x/${KERNEL}.tar.xz"
-            fi
-            
-            echo "extracting ${KERNEL}.tar.xz"
-            tar xvf ${KERNEL}.tar.xz
-        fi
+		if [ ! -d ${KERNEL} ]
+		then
+			if [ ! -f ${KERNEL}.tar.xz ]
+			then
+				echo "${KERNEL}.tar.xz not found, downloading..."
+				wget "https://cdn.kernel.org/pub/linux/kernel/v${KERNEL:6:1}.x/${KERNEL}.tar.xz"
+			fi
+			
+			echo "extracting ${KERNEL}.tar.xz"
+			tar xvf ${KERNEL}.tar.xz
+		fi
 
-        echo "building ${IMAGE_PATH}"
-        
-        cd ${KERNEL}
-        make mrproper defconfig -j"$(nproc)" all
-        cd ../
-        
-    else
-        echo "${IMAGE_PATH} already build, skipping..."
-    fi
+		echo "building ${IMAGE_PATH}"
+		
+		cd ${KERNEL}
+		make mrproper defconfig -j"$(nproc)" all
+		cd ../
+		
+	else
+		echo "${IMAGE_PATH} already build, skipping..."
+	fi
 
-    cp ${IMAGE_PATH} ${IMAGE}
+	cp ${IMAGE_PATH} ${IMAGE}
 fi
 
 
@@ -73,20 +73,26 @@ then
 		mkdir bin dev etc proc var tmp usr mnt sys
 		cd ../
 	fi
-    if [ ! -f ${PAYLOAD} ]
-    then
-        echo "please provide a valid payload."
-        exit 1
-    fi
-	cp ${PAYLOAD} "rootfs/init"
-    	chmod +x "rootfs/init"
+	if [ -z ${PAYLOAD} ]
+	then
+		echo "building rootfs without any payload provided."
+	else
+		if [ ! -f ${PAYLOAD}]
+		then
+			echo "Please provide a valid payload."
+			exit 1
+		else
+			cp ${PAYLOAD} "rootfs/init"
+				chmod +x "rootfs/init"
+		fi
+	fi
 
-    cd rootfs
+	cd rootfs
 	find . | cpio -o -H newc | gzip > ../initramfs
-    cd ../
+	cd ../
 
-    echo "done."
-    
+	echo "done."
+	
 else
-    echo "initramfs already build, skipping..."
+	echo "initramfs already build, skipping..."
 fi
