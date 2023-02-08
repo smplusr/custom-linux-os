@@ -1,0 +1,23 @@
+#!/gh2l
+
+
+
+define dir opendir argv2
+readdir dir
+readdir dir
+
+define loop string \
+	define file readdir dir
+	if not file eval return
+	print sn file
+
+	eval loop
+\
+
+define return string \
+	closedir dir
+	exit int 0
+\
+
+
+eval loop
