@@ -15,7 +15,7 @@ help () {
 cat <<EOF
 Builds a minimal linux kernel and makes a minimal root filesystem from a custom payload
 
-Syntax: build.sh [-h|k|i|p]
+Syntax: build.sh [-h|k|i|n|p|o]
 options:
 
 	h		Prints this help
