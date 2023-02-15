@@ -6,7 +6,7 @@
 
 OUT_DEV=""
 INITRAMFS_BUILDER="kernel-build-scripts/build.sh"
-ROOTFS="custom-os-rootfs"
+ROOTFS="rootfs"
 GRUB_BUILDER="boot-grub-x86/build.sh"
 GRUB_ROM="boot-grub-x86/grub-efi.tar.gz"
 
