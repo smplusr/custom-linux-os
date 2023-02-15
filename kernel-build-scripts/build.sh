@@ -6,7 +6,7 @@
 KERNEL="linux-6.1.9"
 IMAGE="vmlinuz"
 IMAGE_PATH="$KERNEL/arch/x86/boot/"
-ROOTFS="rootfs"
+ROOTFS=""
 
 
 
@@ -20,7 +20,7 @@ options:
 	h		Prints this help
 	k		Specifies a kernel (default: "$KERNEL")
 	i		Specifies an image (default: "$IMAGE")
-	r		Specifies a root filesystem (default: "$ROOTFS")
+	r		Specifies a root filesystem (default: UNSET)
 EOF
 exit 0
 }
@@ -52,8 +52,8 @@ build_kernel () {
 					wget "https://cdn.kernel.org/pub/linux/kernel/v${1:6:1}.x/$1.tar.xz"
 				fi
 				
-				echo "extracting $1.tar.xz"
-				tar xvf $1.tar.xz
+				echo "extracting $local/$1.tar.xz"
+				tar xvf $local/$1.tar.xz
 			fi
 	
 			echo "building $3"
@@ -88,6 +88,12 @@ build_initramfs () {
 	local=$(pwd)
 
 	cd $1
+
+	chmod +x *
+
+	echo "Building init RAM filesystem with following files:"
+	find .
+
 	find . | cpio -o -H newc | gzip > $local/initramfs
 	cd $local
 }
@@ -97,5 +103,3 @@ build_initramfs () {
 
 build_kernel $KERNEL $IMAGE $IMAGE_PATH
 build_initramfs $ROOTFS
-
-echo "done."	

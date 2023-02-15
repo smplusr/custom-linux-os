@@ -1,6 +1,7 @@
-#!/gh2l
+#!/gch2l
 
 
+put string "Booting operating system"
 
 define init_bootdev string \
 	put string " Enter boot device: "
@@ -12,8 +13,7 @@ define init_bootdev string \
 	put string " Content of root directory is: "
 
 	cd /root
-	fork exec int 1 /ls .		NOT NEEDED	/ls should be /root/bin/ls		COMMENT
-					Should FORK all files from /root/bin to / ?		COMMENT
+	fork exec string "/ls ."
 \
 
 
