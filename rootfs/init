@@ -1,0 +1,20 @@
+#!/gch2l
+
+
+put string "Booting operating system"
+
+define init_bootdev string \
+	put string " Enter boot device: "
+	define boot_dev input
+	
+	mount conc /dev/ boot_dev /root vfat
+\
+
+
+
+mount none /dev devtmpfs
+mount none /sys sysfs		DOES NOT WORK
+mount none /proc proc		DOES NOT WORK
+
+sleep int 2
+eval init_bootdev
