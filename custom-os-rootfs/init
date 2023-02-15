@@ -8,12 +8,6 @@ define init_bootdev string \
 	define boot_dev input
 	
 	mount conc /dev/ boot_dev /root vfat
-
-
-	put string " Content of root directory is: "
-
-	cd /root
-	fork exec string "/ls ."
 \
 
 
