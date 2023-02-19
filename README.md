@@ -1,4 +1,4 @@
-# custom-os-build-scripts
+# custom-linux-os
 
 DISCLAIMER: This project IS NOT a Linux distribution. It is meant to be an educationnal Operating System (not following POSIX standards).
 
