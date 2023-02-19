@@ -61,15 +61,15 @@ testvar () {
 
 
 build_archive () {
-	$local/$INITRAMFS_BUILDER -i $local/vmlinuz.bak -r $local/$ROOTFS
-	$local/$GRUB_BUILDER -k $local/vmlinuz.bak -i initramfs -g $local/$GRUB_ROM
+	$local/$INITRAMFS_BUILDER -i $local/vmlinuz -r $local/$ROOTFS
+	$local/$GRUB_BUILDER -k $local/vmlinuz -i initramfs -g $local/$GRUB_ROM
 }
 
 
 setup_disk () {
 	testvar "$1" "output device"
 
-	read -p "Warning, the following disk will be overwritten: $1, proceed [Y/n]: " response
+	read -p "Warning, the following disk will be overwritten: $1, proceed [N/y]: " response
 	case $response in
 		[yY]) continue ;;
 		*) clean && exit 0

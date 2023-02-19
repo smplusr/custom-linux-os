@@ -1,20 +1,77 @@
 #!/gch2l
 
 
-put string "Booting operating system"
 
-define init_bootdev string \
-	put string " Enter boot device: "
-	define boot_dev input
-	
-	mount conc /dev/ boot_dev /root vfat
+define exit_failure string \
+	put string "Press any key to reboot."
+	input reboot
+\
+
+
+define wrong_bootdev string \
+	put string "Wrong boot device."
+	eval exit_failure
+\
+
+
+define no_bin_directory string \
+	put string "Missing bin directory."
+	eval exit_failure
+\
+
+define no_root_directory string \
+	put string "Missing root (data) directory"
+	eval exit_failure
+\
+
+define no_bin_init string \
+	put string "Missing supplementary init file."
+	eval exit_failure
+\
+
+
+define init_end string \
+	delete wrong_bootdev
+	delete no_bin_directory
+	delete no_bin_init
+	delete init_subsystem
+	delete read_bootdev
+
+	cd /root
+	print sn string "Ending init sequence"
+	eval input
+\
+
+define init_subsystem string \
+	if not opendir /disk/bin eval no_bin_directory
+	if not opendir /disk/root eval no_root_directory
+
+	ln /disk/root /root
+	ln /disk/bin /bin
+
+	eval init_end
+\
+
+
+define read_bootdev string \
+	put string "Enter boot device: "
+	define boot_dev conc /dev/ input
+
+	if not open r boot_dev eval wrong_bootdev
+	mount boot_dev /disk vfat
+
+	eval init_subsystem
 \
 
 
 
 mount none /dev devtmpfs
-mount none /sys sysfs		DOES NOT WORK
-mount none /proc proc		DOES NOT WORK
+mkdir /sys	mount none /sys sysfs
+mkdir /proc	mount none /proc proc
+
+mkdir /disk
+rmdir /root
+
 
 sleep int 2
-eval init_bootdev
+eval read_bootdev
